@@ -2,19 +2,34 @@
 ### Do not make changes to this file directly
 
 
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
 type Link {
   description: String!
   id: Int!
+  linkPostedBy: User
   url: String!
 }
 
 type Mutation {
   createLink(description: String!, url: String!): Link!
   deleteLink(id: Int!): Link
-  updateLink(description: String, id: Int!, url: String): Link
+  loginUser(email: String!, password: String!): AuthPayload!
+  signupUser(email: String!, name: String!, password: String!): AuthPayload!
+  updateLink(description: String!, id: Int!, url: String!): Link
 }
 
 type Query {
   getAllLinks: [Link!]!
   getLink(id: Int!): Link
+}
+
+type User {
+  email: String!
+  id: Int!
+  links: [Link!]!
+  name: String!
 }

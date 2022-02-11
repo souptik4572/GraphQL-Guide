@@ -1,10 +1,23 @@
-import { extendType, intArg, nonNull, nullable, objectType, stringArg } from 'nexus';
-import { NexusGenObjects } from '../../nexus-typegen';
+import { extendType, intArg, nonNull, objectType, stringArg } from 'nexus';
 
 export const Link = objectType({
 	name: 'Link',
 	definition(t) {
-		t.nonNull.int('id'), t.nonNull.string('description'), t.nonNull.string('url');
+		t.nonNull.int('id'),
+			t.nonNull.string('description'),
+			t.nonNull.string('url'),
+			t.field('linkPostedBy', {
+				type: 'User',
+				resolve(parent, args, context, info) {
+					return context.prisma.link
+						.findUnique({
+							where: {
+								id: parent.id,
+							},
+						})
+						.linkCreatedBy();
+				},
+			});
 	},
 });
 

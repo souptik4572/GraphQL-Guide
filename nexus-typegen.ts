@@ -28,6 +28,10 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  AuthPayload: { // root type
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+  }
   Link: { // root type
     description: string; // String!
     id: number; // Int!
@@ -35,6 +39,11 @@ export interface NexusGenObjects {
   }
   Mutation: {};
   Query: {};
+  User: { // root type
+    email: string; // String!
+    id: number; // Int!
+    name: string; // String!
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -48,36 +57,62 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  AuthPayload: { // field return type
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+  }
   Link: { // field return type
     description: string; // String!
     id: number; // Int!
+    linkPostedBy: NexusGenRootTypes['User'] | null; // User
     url: string; // String!
   }
   Mutation: { // field return type
     createLink: NexusGenRootTypes['Link']; // Link!
     deleteLink: NexusGenRootTypes['Link'] | null; // Link
+    loginUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
+    signupUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     updateLink: NexusGenRootTypes['Link'] | null; // Link
   }
   Query: { // field return type
     getAllLinks: NexusGenRootTypes['Link'][]; // [Link!]!
     getLink: NexusGenRootTypes['Link'] | null; // Link
   }
+  User: { // field return type
+    email: string; // String!
+    id: number; // Int!
+    links: NexusGenRootTypes['Link'][]; // [Link!]!
+    name: string; // String!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
+  AuthPayload: { // field return type name
+    token: 'String'
+    user: 'User'
+  }
   Link: { // field return type name
     description: 'String'
     id: 'Int'
+    linkPostedBy: 'User'
     url: 'String'
   }
   Mutation: { // field return type name
     createLink: 'Link'
     deleteLink: 'Link'
+    loginUser: 'AuthPayload'
+    signupUser: 'AuthPayload'
     updateLink: 'Link'
   }
   Query: { // field return type name
     getAllLinks: 'Link'
     getLink: 'Link'
+  }
+  User: { // field return type name
+    email: 'String'
+    id: 'Int'
+    links: 'Link'
+    name: 'String'
   }
 }
 
@@ -90,10 +125,19 @@ export interface NexusGenArgTypes {
     deleteLink: { // args
       id: number; // Int!
     }
+    loginUser: { // args
+      email: string; // String!
+      password: string; // String!
+    }
+    signupUser: { // args
+      email: string; // String!
+      name: string; // String!
+      password: string; // String!
+    }
     updateLink: { // args
-      description?: string | null; // String
+      description: string; // String!
       id: number; // Int!
-      url?: string | null; // String
+      url: string; // String!
     }
   }
   Query: {
