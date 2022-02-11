@@ -8,26 +8,13 @@ export const Link = objectType({
 	},
 });
 
-let links: NexusGenObjects['Link'][] = [
-	{
-		id: 1,
-		url: 'www.howtographql.com',
-		description: 'Fullstack tutorial for graphql',
-	},
-	{
-		id: 2,
-		url: 'graphql.org',
-		description: 'GraphQL official website',
-	},
-];
-
 export const LinkQuery = extendType({
 	type: 'Query',
 	definition(t) {
 		t.nonNull.list.nonNull.field('getAllLinks', {
 			type: 'Link',
 			resolve(parent, args, context, info) {
-				return links;
+				return context.prisma.link.findMany();
 			},
 		});
 		t.nullable.field('getLink', {
@@ -37,7 +24,11 @@ export const LinkQuery = extendType({
 			},
 			resolve(parent, args, context) {
 				const { id } = args;
-				return links.filter((aLink) => aLink.id === id)[0];
+				return context.prisma.link.findUnique({
+					where: {
+						id,
+					},
+				});
 			},
 		});
 	},
@@ -54,14 +45,12 @@ export const LinkMutation = extendType({
 			},
 			resolve(parent, args, context) {
 				const { url, description } = args;
-				const idCount = links.length + 1;
-				const newLink = {
-					id: idCount,
-					url,
-					description,
-				};
-				links.push(newLink);
-				return newLink;
+				return context.prisma.link.create({
+					data: {
+						url,
+						description,
+					},
+				});
 			},
 		});
 		t.nullable.field('updateLink', {
@@ -73,11 +62,15 @@ export const LinkMutation = extendType({
 			},
 			resolve(parent, args, context, info) {
 				const { id, url, description } = args;
-				const particularLink = links.filter((aLink) => aLink.id === id)[0];
-				if (!!!particularLink) return null;
-				if (!!url) particularLink.url = url;
-				if (!!description) particularLink.description = description;
-				return particularLink;
+				return context.prisma.link.update({
+					where: {
+						id,
+					},
+					data: {
+						url,
+						description,
+					},
+				});
 			},
 		});
 		t.nullable.field('deleteLink', {
@@ -87,10 +80,11 @@ export const LinkMutation = extendType({
 			},
 			resolve(parent, args, context, info) {
 				const { id } = args;
-				const particularLink = links.filter((aLink) => aLink.id === id)[0];
-				if (!!!particularLink) return null;
-				links = links.filter((aLink) => aLink.id !== id);
-				return particularLink;
+				return context.prisma.link.delete({
+					where: {
+						id,
+					},
+				});
 			},
 		});
 	},
