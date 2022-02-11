@@ -57,18 +57,21 @@ export const LinkMutation = extendType({
 			type: 'Link',
 			args: {
 				id: nonNull(intArg()),
-				url: nullable(stringArg()),
-				description: nullable(stringArg()),
+				url: nonNull(stringArg()),
+				description: nonNull(stringArg()),
 			},
 			resolve(parent, args, context, info) {
 				const { id, url, description } = args;
+				let updatedLink;
+				if (!!url && !!description) updatedLink = { url, description };
+				else if (!!url) updatedLink = { url };
+				else if (!!description) updatedLink = { description };
 				return context.prisma.link.update({
 					where: {
 						id,
 					},
 					data: {
-						url,
-						description,
+						...updatedLink,
 					},
 				});
 			},
