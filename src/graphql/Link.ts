@@ -1,4 +1,4 @@
-import { extendType, intArg, nonNull, nullable, objectType, stringArg } from 'nexus';
+import { arg, extendType, intArg, nonNull, nullable, objectType, stringArg } from 'nexus';
 
 export const Link = objectType({
 	name: 'Link',
@@ -40,6 +40,8 @@ export const LinkQuery = extendType({
 			type: 'Link',
 			args: {
 				filter: stringArg(),
+				skip: intArg(),
+				take: intArg(),
 			},
 			resolve(parent, args, context, info) {
 				const where = args.filter
@@ -52,6 +54,8 @@ export const LinkQuery = extendType({
 					: {};
 				return context.prisma.link.findMany({
 					where,
+					skip: args?.skip ? (args.skip as number) : undefined,
+					take: args?.take ? (args.take as number) : undefined,
 				});
 			},
 		});

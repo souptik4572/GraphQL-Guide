@@ -25,7 +25,7 @@ type Mutation {
 }
 
 type Query {
-  getAllLinks(filter: String): [Link!]!
+  getAllLinks(filter: String, skip: Int, take: Int): [Link!]!
   getLink(id: Int!): Link
 }
 

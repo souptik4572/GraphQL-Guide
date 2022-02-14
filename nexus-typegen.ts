@@ -177,6 +177,8 @@ export interface NexusGenArgTypes {
   Query: {
     getAllLinks: { // args
       filter?: string | null; // String
+      skip?: number | null; // Int
+      take?: number | null; // Int
     }
     getLink: { // args
       id: number; // Int!
