@@ -44,6 +44,10 @@ export interface NexusGenObjects {
     id: number; // Int!
     name: string; // String!
   }
+  Vote: { // root type
+    link: NexusGenRootTypes['Link']; // Link!
+    user: NexusGenRootTypes['User']; // User!
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -66,8 +70,10 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     linkPostedBy: NexusGenRootTypes['User'] | null; // User
     url: string; // String!
+    voters: NexusGenRootTypes['User'][]; // [User!]!
   }
   Mutation: { // field return type
+    castVote: NexusGenRootTypes['Vote']; // Vote!
     createLink: NexusGenRootTypes['Link']; // Link!
     deleteLink: NexusGenRootTypes['Link'] | null; // Link
     loginUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
@@ -84,6 +90,10 @@ export interface NexusGenFieldTypes {
     links: NexusGenRootTypes['Link'][]; // [Link!]!
     name: string; // String!
   }
+  Vote: { // field return type
+    link: NexusGenRootTypes['Link']; // Link!
+    user: NexusGenRootTypes['User']; // User!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
@@ -96,8 +106,10 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     linkPostedBy: 'User'
     url: 'String'
+    voters: 'User'
   }
   Mutation: { // field return type name
+    castVote: 'Vote'
     createLink: 'Link'
     deleteLink: 'Link'
     loginUser: 'AuthPayload'
@@ -114,10 +126,17 @@ export interface NexusGenFieldTypeNames {
     links: 'Link'
     name: 'String'
   }
+  Vote: { // field return type name
+    link: 'Link'
+    user: 'User'
+  }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
+    castVote: { // args
+      linkId: number; // Int!
+    }
     createLink: { // args
       description: string; // String!
       url: string; // String!

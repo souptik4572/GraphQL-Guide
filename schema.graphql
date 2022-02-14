@@ -12,9 +12,11 @@ type Link {
   id: Int!
   linkPostedBy: User
   url: String!
+  voters: [User!]!
 }
 
 type Mutation {
+  castVote(linkId: Int!): Vote!
   createLink(description: String!, url: String!): Link!
   deleteLink(id: Int!): Link
   loginUser(email: String!, password: String!): AuthPayload!
@@ -32,4 +34,9 @@ type User {
   id: Int!
   links: [Link!]!
   name: String!
+}
+
+type Vote {
+  link: Link!
+  user: User!
 }
