@@ -1,4 +1,4 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from 'nexus';
+import { extendType, intArg, nonNull, nullable, objectType, stringArg } from 'nexus';
 
 export const Link = objectType({
 	name: 'Link',
@@ -58,10 +58,16 @@ export const LinkMutation = extendType({
 			},
 			resolve(parent, args, context) {
 				const { url, description } = args;
+				if (!!!context.userId) throw new Error('Cannot add link without logging in');
 				return context.prisma.link.create({
 					data: {
 						url,
 						description,
+						linkCreatedBy: {
+							connect: {
+								id: context.userId,
+							},
+						},
 					},
 				});
 			},
@@ -70,11 +76,19 @@ export const LinkMutation = extendType({
 			type: 'Link',
 			args: {
 				id: nonNull(intArg()),
-				url: nonNull(stringArg()),
-				description: nonNull(stringArg()),
+				url: nullable(stringArg()),
+				description: nullable(stringArg()),
 			},
-			resolve(parent, args, context, info) {
+			async resolve(parent, args, context, info) {
 				const { id, url, description } = args;
+				if (!!!context.userId) throw new Error('Cannot update link without logging in');
+				const existingLink = await context.prisma.link.findUnique({
+					where: {
+						id,
+					},
+				});
+				if (existingLink?.userId !== context.userId)
+					throw new Error('Link does not belong to logged in user');
 				let updatedLink;
 				if (!!url && !!description) updatedLink = { url, description };
 				else if (!!url) updatedLink = { url };
@@ -94,8 +108,16 @@ export const LinkMutation = extendType({
 			args: {
 				id: nonNull(intArg()),
 			},
-			resolve(parent, args, context, info) {
+			async resolve(parent, args, context, info) {
 				const { id } = args;
+				if (!!!context.userId) throw new Error('Cannot delete link without logging in');
+				const existingLink = await context.prisma.link.findUnique({
+					where: {
+						id,
+					},
+				});
+				if (existingLink?.userId !== context.userId)
+					throw new Error('Link does not belong to logged in user');
 				return context.prisma.link.delete({
 					where: {
 						id,

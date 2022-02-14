@@ -135,9 +135,9 @@ export interface NexusGenArgTypes {
       password: string; // String!
     }
     updateLink: { // args
-      description: string; // String!
+      description?: string | null; // String
       id: number; // Int!
-      url: string; // String!
+      url?: string | null; // String
     }
   }
   Query: {
