@@ -175,6 +175,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    getAllLinks: { // args
+      filter?: string | null; // String
+    }
     getLink: { // args
       id: number; // Int!
     }
