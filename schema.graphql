@@ -15,6 +15,11 @@ type Link {
   voters: [User!]!
 }
 
+type LinkFeed {
+  count: Int!
+  links: [Link!]!
+}
+
 type Mutation {
   castVote(linkId: Int!): VoteMessage!
   createLink(description: String!, url: String!): Link!
@@ -25,7 +30,7 @@ type Mutation {
 }
 
 type Query {
-  getAllLinks(filter: String, skip: Int, take: Int): [Link!]!
+  getAllLinks(filter: String, skip: Int, take: Int): LinkFeed
   getLink(id: Int!): Link
 }
 

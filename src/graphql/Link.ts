@@ -1,5 +1,12 @@
 import { arg, extendType, intArg, nonNull, nullable, objectType, stringArg } from 'nexus';
 
+export const LinkFeed = objectType({
+	name: 'LinkFeed',
+	definition(t) {
+		t.nonNull.list.nonNull.field('links', { type: 'Link' }), t.nonNull.int('count');
+	},
+});
+
 export const Link = objectType({
 	name: 'Link',
 	definition(t) {
@@ -36,14 +43,14 @@ export const Link = objectType({
 export const LinkQuery = extendType({
 	type: 'Query',
 	definition(t) {
-		t.nonNull.list.nonNull.field('getAllLinks', {
-			type: 'Link',
+		t.field('getAllLinks', {
+			type: 'LinkFeed',
 			args: {
 				filter: stringArg(),
 				skip: intArg(),
 				take: intArg(),
 			},
-			resolve(parent, args, context, info) {
+			async resolve(parent, args, context, info) {
 				const where = args.filter
 					? {
 							OR: [
@@ -52,11 +59,16 @@ export const LinkQuery = extendType({
 							],
 					  }
 					: {};
-				return context.prisma.link.findMany({
+				const links = await context.prisma.link.findMany({
 					where,
 					skip: args?.skip ? (args.skip as number) : undefined,
 					take: args?.take ? (args.take as number) : undefined,
 				});
+				const count = await context.prisma.link.count();
+				return {
+					count,
+					links,
+				};
 			},
 		});
 		t.nullable.field('getLink', {
