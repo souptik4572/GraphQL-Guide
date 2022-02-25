@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { extendType, intArg, nonNull, objectType, stringArg } from 'nexus';
 
 export const Vote = objectType({
@@ -39,7 +38,7 @@ export const VoteMutation = extendType({
 						},
 					})
 					.voters();
-				const hasVoted = allVoters.findIndex((aVoter) => aVoter.id === userId) !== -1;
+				const hasVoted = allVoters.findIndex((aVoter: any) => aVoter.id === userId) !== -1;
 				let link, message;
 				if (hasVoted) {
 					link = await context.prisma.link.update({
